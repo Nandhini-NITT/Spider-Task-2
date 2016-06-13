@@ -1,0 +1,13 @@
+canvas
+{
+	background-color:black;
+	margin: 0 auto;
+	position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+	border-left:10px solid blue;
+	border-right:10px solid blue;
+	box-sizing:border-box;
+}
