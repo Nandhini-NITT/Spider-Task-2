@@ -11,3 +11,9 @@ canvas
 	border-right:10px solid blue;
 	box-sizing:border-box;
 }
+p
+{
+text-align:center;
+font-family: 'Indie Flower', cursive;
+font-size:2rem;
+}

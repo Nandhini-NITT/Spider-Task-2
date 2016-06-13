@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0;
+var gameball,paddle1,paddle2,frame,score=0,waiting=true;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -43,7 +43,7 @@ function component(x,y,width,height,control)
 					var ballbottom=ballobj.y+10;
 					var paddletop=this.y;
 					var paddlebottom=this.y+this.height;
-					if((paddleright==ballleft || paddleleft==ballright) && (balltop>=paddletop) && (ballbottom<=paddlebottom))
+					if((paddleright==ballleft || paddleleft==ballright)&& (ballobj.y>=paddletop || ballbottom==paddletop && ballbottom<=paddlebottom+10))
 						{
 						this.control=0;
 						score++;
@@ -75,10 +75,13 @@ function ball(x,y,r)
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
+	if(!waiting)
+	{
 	gameball.newPos();
 	paddle1.update();
 	paddle2.update();
-	if(paddle1.crashWith(gameball))
+	}
+	if(paddle1.crashWith(gameball) )
 	{
 		gameball.speed=1;
 		setTimeout(function()
@@ -98,12 +101,13 @@ function updateGame()
 	}
 	if(GameArea.key && GameArea.key == 38)
 		{
+		waiting=false;
 		if(paddle1.control==1)
 			paddle1.y-=1;
 		else if(paddle2.control==1)
 			paddle2.y-=1;
 		}
-	if(GameArea.key && GameArea.key == 40)
+	if(GameArea.key && GameArea.key == 40 && !waiting)
 		{
 			if(paddle1.control==1)
 			paddle1.y+=1;
@@ -115,7 +119,7 @@ function updateGame()
 	gameball.update();
 	paddle1.update();
 	paddle2.update();
-	if(gameball.x==10 || gameball.x== 290)
+	if(gameball.x==10 || gameball.x== 290 && !waiting)
 	{
 		GameArea.clear();
 		var ctx=GameArea.context;
