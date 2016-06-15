@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0,waiting=true;
+var gameball,paddle1,paddle2,frame,score=0,waiting=true,reflectat2=0;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -43,7 +43,7 @@ function component(x,y,width,height,control)
 					var ballbottom=ballobj.y+10;
 					var paddletop=this.y;
 					var paddlebottom=this.y+this.height;
-					if((paddleright==ballleft || paddleleft==ballright)&& (ballobj.y>=paddletop || ballbottom==paddletop && ballbottom<=paddlebottom+10))
+					if((paddleright>=(ballleft) && paddleleft<=ballright)&& (ballobj.y>=paddletop && ballbottom<=paddlebottom+10))
 						{
 						this.control=0;
 						score++;
@@ -53,15 +53,21 @@ function component(x,y,width,height,control)
 						return false;
 				}
 }
-function ball(x,y,r)
+function ball(x,y,r,path,angle)
 {
-	this.x=x;
-	this.y=y;
+	this.startx=x;
+	this.starty=y;
+	this.path=0;
 	this.radius=r;
-	this.speed=-1;
+	this.speed=1;
+	this.angle=angle/180*3.14;
+	this.multiplierx=-1;
+	this.multipliery=1;
 	this.newPos=function()
 				{
-					this.x+=this.speed;
+					this.x=this.startx+this.multiplierx*(this.path*Math.cos(this.angle));
+					this.y=this.starty+this.multipliery*(this.path*Math.sin(this.angle));
+					this.path+=this.speed;
 				}
 	this.update=function()
 				{
@@ -72,6 +78,33 @@ function ball(x,y,r)
 					ctx.fill();
 				}
 }
+function checkboundarycollision()
+{
+	if(gameball.y<=10)
+		{
+			gameball.speed+=0.5;
+			gameball.startx=gameball.x;
+			gameball.starty=gameball.y;
+			gameball.multiplierx*=1;
+			gameball.multipliery*=-1;
+			gameball.path=0;
+			gameball.newPos();
+		}
+	else if(gameball.y>=290)
+		{
+			gameball.speed+=0.5;
+			gameball.startx=gameball.x;
+			gameball.starty=gameball.y;
+			gameball.multiplierx*=1;
+			gameball.multipliery*=-1;
+			gameball.path=0;
+			gameball.newPos();
+		}
+}
+function findangle(startx,starty,x,y)
+{
+	gameball.angle=-Math.atan((y-starty)/(x-startx));
+}
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
@@ -81,9 +114,15 @@ function updateGame()
 	paddle1.update();
 	paddle2.update();
 	}
+	checkboundarycollision();
 	if(paddle1.crashWith(gameball) )
 	{
-		gameball.speed=1;
+		gameball.startx=25;
+		gameball.multiplierx*=-1;
+		gameball.path=0;
+		gameball.starty=gameball.y;
+		gameball.multipliery*=1;
+		gameball.newPos();
 		setTimeout(function()
 					{
 					paddle1.y=Math.floor(Math.random()*241);
@@ -92,7 +131,12 @@ function updateGame()
 	}
 	else if(paddle2.crashWith(gameball))
 	{
-		gameball.speed=-1;
+		gameball.startx=gameball.x;
+		gameball.multiplierx*=-1;
+		gameball.multipliery*=1;
+		gameball.starty=gameball.y;
+		gameball.path=0;
+		gameball.newPos();
 		setTimeout(function()
 					{
 					paddle2.y=Math.floor(Math.random()*241);
@@ -119,7 +163,7 @@ function updateGame()
 	gameball.update();
 	paddle1.update();
 	paddle2.update();
-	if(gameball.x==10 || gameball.x== 290 && !waiting)
+	if(gameball.x<=10 || gameball.x>= 290 && !waiting)
 	{
 		GameArea.clear();
 		var ctx=GameArea.context;
@@ -135,7 +179,9 @@ function startGame()
 {
 	paddle1=new component(0,100,15,60,1);
 	paddle2=new component(285,100,15,60,0);
-	gameball=new ball(140,140,10);
+	var angle=Math.random()*61;
+	gameball=new ball(140,140,10,100,angle);
+	gameball.newPos();
 	GameArea.start();
 	paddle1.update();
 	paddle2.update();
