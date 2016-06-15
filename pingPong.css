@@ -11,9 +11,23 @@ canvas
 	border-right:10px solid blue;
 	box-sizing:border-box;
 }
-p
+#score ,#score-board
 {
-text-align:center;
-font-family: 'Indie Flower', cursive;
-font-size:2rem;
+	text-align:center;
+	font-family: 'Indie Flower', cursive;
+	font-size:2rem;
+	margin: 0 auto;
+	position: absolute;
+    top: 90%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+	box-sizing:border-box;
+}
+table td
+{
+	padding:1rem;
+	font-size:1rem;
+	border:3px solid red;
+	text-align:center;
 }

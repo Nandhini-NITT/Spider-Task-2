@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0,waiting=true,reflectat2=0;
+var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -14,6 +14,7 @@ var GameArea=
 				window.addEventListener('keyup', function (e) {
 						GameArea.key = e.keycode;
 						})
+
 			},
 	clear: function()
 			{
@@ -23,6 +24,7 @@ var GameArea=
 function component(x,y,width,height,control)
 {
 	this.control=control;
+	this.score=0;
 	this.x=x;
 	this.y=y;
 	this.width=width;
@@ -46,12 +48,24 @@ function component(x,y,width,height,control)
 					if((paddleright>=(ballleft) && paddleleft<=ballright)&& (ballobj.y>=paddletop && ballbottom<=paddlebottom+10))
 						{
 						this.control=0;
-						score++;
+						this.score++;
 						return true;
 						}
 					else
 						return false;
 				}
+}
+function hide (elements) {
+  elements = elements.length ? elements : [elements];
+  for (var index = 0; index < elements.length; index++) {
+    elements[index].style.display = 'none';
+  }
+}
+function unhide (elements) {
+  elements = elements.length ? elements : [elements];
+  for (var index = 0; index < elements.length; index++) {
+    elements[index].style.display = 'table';
+  }
 }
 function ball(x,y,r,path,angle)
 {
@@ -105,6 +119,11 @@ function findangle(startx,starty,x,y)
 {
 	gameball.angle=-Math.atan((y-starty)/(x-startx));
 }
+function instruct_2()
+{
+no_of_players=2;
+document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down <br> Player 2:Use up and down arrow keys <br> Press Enter to continue";
+}
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
@@ -115,6 +134,17 @@ function updateGame()
 	paddle2.update();
 	}
 	checkboundarycollision();
+	
+	if(GameArea.key && GameArea.key == 84 && waiting)
+	{
+		instruct_2();
+	}
+	if(GameArea.key && GameArea.key == 83 && waiting)
+	{
+		waiting=false;
+		no_of_players=1;
+		document.getElementById("score").innerHTML="Score : "+score;
+	}
 	if(paddle1.crashWith(gameball) )
 	{
 		gameball.startx=25;
@@ -143,9 +173,11 @@ function updateGame()
 					},500);
 		paddle1.control=1;
 	}
-	if(GameArea.key && GameArea.key == 38)
+	if(no_of_players==1)
+	{
+	document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score);
+	if(GameArea.key && GameArea.key == 38 && !waiting)
 		{
-		waiting=false;
 		if(paddle1.control==1)
 			paddle1.y-=1;
 		else if(paddle2.control==1)
@@ -158,7 +190,32 @@ function updateGame()
 		else if(paddle2.control==1)
 			paddle2.y+=1;
 		}
-		
+	}
+	else if(no_of_players==2)
+	{
+		document.getElementById("1").innerHTML=paddle1.score;
+		document.getElementById("2").innerHTML=paddle2.score;
+		if(GameArea.key && GameArea.key== 13)
+		{
+			waiting=false;
+			unhide(document.getElementById("score-board"));
+			hide(document.getElementById("score"));
+		}
+		if(GameArea.key && GameArea.key== 87 && !waiting)
+		{
+			if(paddle1.control==1)
+			paddle1.y-=1;
+		}
+		if(GameArea.key && GameArea.key== 88 && !waiting)
+		{
+			if(paddle1.control==1)
+			paddle1.y+=1;
+		}
+		if(GameArea.key &&  GameArea.key ==38 && paddle2.control)
+			paddle2.y-=1;
+		if(GameArea.key && GameArea.key == 40 && paddle2.control)
+			paddle2.y+=1;
+	}
 	GameArea.clear();
 	gameball.update();
 	paddle1.update();
@@ -166,11 +223,20 @@ function updateGame()
 	if(gameball.x<=10 || gameball.x>= 290 && !waiting)
 	{
 		GameArea.clear();
+		hide(document.getElementById("score"));
 		var ctx=GameArea.context;
 		ctx.font = "15px Comic Sans MS";
 		ctx.fillStyle = "white";
 		ctx.textAlign = "center";
-		ctx.fillText("Game Over - SCORE:  "+score, GameArea.canvas.width/2, GameArea.canvas.height/2);
+		if(no_of_players==1)
+		ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
+		else
+		{
+		hide(document.getElementById("score-board"));
+		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
+		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+20);
+		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+40);
+		}
 		cancelAnimationFrame(frame);
 	}
 }
@@ -182,6 +248,7 @@ function startGame()
 	var angle=Math.random()*61;
 	gameball=new ball(140,140,10,100,angle);
 	gameball.newPos();
+	hide(document.getElementById("score-board"));
 	GameArea.start();
 	paddle1.update();
 	paddle2.update();
