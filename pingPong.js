@@ -45,12 +45,24 @@ function component(x,y,width,height,control)
 					var ballbottom=ballobj.y+10;
 					var paddletop=this.y;
 					var paddlebottom=this.y+this.height;
+					var corner1dist_sq = Math.pow(ballobj.x - this.x,2) + Math.pow(ballobj.y - this.y,2);
+					var corner2dist_sq = Math.pow(ballobj.x - (this.x+this.width),2) + Math.pow(ballobj.y - this.y,2);
+					var corner3dist_sq = Math.pow(ballobj.x - (this.x + this.width),2) + Math.pow(ballobj.y - (this.y + this.height),2);
+					var corner4dist_sq = Math.pow(ballobj.x - this.x,2) + Math.pow(ballobj.y - (this.y + this.height),2);
+					if(corner1dist_sq <= Math.pow(ballobj.radius,2)||corner2dist_sq <= Math.pow(ballobj.radius,2)	|| corner3dist_sq <=Math.pow(ballobj.radius,2)||corner4dist_sq <= Math.pow(ballobj.radius,2))
+					{
+						gameball.multipliery*=-1;
+						hitsound.play();
+						this.control=0;
+						return true;
+					}
 					if((paddleright>=(ballleft) && paddleleft<=ballright)&& (ballobj.y>=paddletop && ballbottom<=paddlebottom+10))
 						{
 						hitsound.play();
 						this.control=0;
 						return true;
 						}
+						
 					else
 						return false;
 				}
@@ -96,7 +108,6 @@ function checkboundarycollision()
 {
 	if(gameball.y<=10)
 		{
-			gameball.speed+=0.2;
 			gameball.startx=gameball.x;
 			gameball.starty=gameball.y;
 			gameball.multiplierx*=1;
@@ -106,7 +117,6 @@ function checkboundarycollision()
 		}
 	else if(gameball.y>=290)
 		{
-			gameball.speed+=0.2;
 			gameball.startx=gameball.x;
 			gameball.starty=gameball.y;
 			gameball.multiplierx*=1;
@@ -145,6 +155,9 @@ function updateGame()
 		no_of_players=1;
 		document.getElementById("score").innerHTML="Score : "+score;
 	}
+	
+	
+	
 	if(paddle1.crashWith(gameball) )
 	{
 		if(no_of_players==1)
@@ -176,6 +189,7 @@ function updateGame()
 					paddle2.y=Math.floor(Math.random()*241);
 					},500);
 		paddle1.control=1;
+		gameball.speed+=0.1;
 	}
 	if(no_of_players==1)
 	{
