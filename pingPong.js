@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0,hitsound,oversound,gameover=false;
+var gameball,paddle1,paddle2,frame,score=0,no_of_players=0,hitsound,oversound,gamestatus=0,pause=false;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -137,28 +137,43 @@ document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press '
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
-	if(!waiting)
+	if(gamestatus!=0 && !pause)
 	{
 	gameball.newPos();
 	paddle1.update();
 	paddle2.update();
 	}
 	checkboundarycollision();
+	if(gamestatus==1 && GameArea.key && GameArea.key== 32)
+		{
+		if(!pause)
+			{
+			pause=true;
+			if(no_of_players==1)
+				document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to resume";
+			else if(no_of_players==2)
+				document.getElementById("score").innerHTML="<br><br><br>Press space to resume";
+			}
+		else
+			{
+			pause=false;
+			if(no_of_players==2)
+			document.getElementById("score").innerHTML="<br><br><br><br>Press space to pause";
+			}
+		GameArea.key=null;
+		}
 	
-	if(GameArea.key && GameArea.key == 84 && waiting)
+	if(GameArea.key && GameArea.key == 84 && gamestatus==0)
 	{
 		instruct_2();
 	}
-	if(GameArea.key && GameArea.key == 83 && waiting)
+	if(GameArea.key && GameArea.key == 83 && gamestatus==0)
 	{
-		waiting=false;
+		gamestatus=1;
 		no_of_players=1;
-		document.getElementById("score").innerHTML="Score : "+score;
+		document.getElementById("score").innerHTML="Score : "+score+"<br>Press space to pause";
 	}
-	
-	
-	
-	if(paddle1.crashWith(gameball) )
+	if(paddle1.crashWith(gameball) && !pause )
 	{
 		if(no_of_players==1)
 			paddle1.score++;
@@ -174,7 +189,7 @@ function updateGame()
 					},500);
 		paddle2.control=1;
 	}
-	else if(paddle2.crashWith(gameball))
+	else if(paddle2.crashWith(gameball) && !pause)
 	{
 		if(no_of_players==1)
 			paddle2.score++;
@@ -189,19 +204,19 @@ function updateGame()
 					paddle2.y=Math.floor(Math.random()*241);
 					},500);
 		paddle1.control=1;
-		gameball.speed+=0.1;
+		gameball.speed+=0.2;
 	}
-	if(no_of_players==1)
+	if(no_of_players==1 && !pause)
 	{
-	document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score);
-	if(GameArea.key && GameArea.key == 38 && !waiting)
+	document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to pause";
+	if(GameArea.key && GameArea.key == 38 && gamestatus!=0)
 		{
 		if(paddle1.control==1)
 			paddle1.y-=2;
 		else if(paddle2.control==1)
 			paddle2.y-=2;
 		}
-	if(GameArea.key && GameArea.key == 40 && !waiting)
+	if(GameArea.key && GameArea.key == 40 && gamestatus!=0)
 		{
 			if(paddle1.control==1)
 			paddle1.y+=2;
@@ -209,7 +224,7 @@ function updateGame()
 			paddle2.y+=2;
 		}
 	}
-	else if(no_of_players==2)
+	else if(no_of_players==2 && !pause)
 	{
 		document.getElementById("1").innerHTML=paddle1.score;
 		document.getElementById("2").innerHTML=paddle2.score;
@@ -227,18 +242,18 @@ function updateGame()
 			gameball.starty=140;
 			gameball.path=0;
 			}
-		if(GameArea.key && GameArea.key== 13)
+		if(GameArea.key && GameArea.key== 13 && gamestatus==0)
 		{
-			waiting=false;
+			gamestatus=1;
 			unhide(document.getElementById("score-board"));
-			hide(document.getElementById("score"));
+			document.getElementById("score").innerHTML="<br><br><br><br>Press space to pause";
 		}
-		if(GameArea.key && GameArea.key== 87 && !waiting)
+		if(GameArea.key && GameArea.key== 87 && gamestatus!=0)
 		{
 			if(paddle1.control==1)
 			paddle1.y-=2;
 		}
-		if(GameArea.key && GameArea.key== 88 && !waiting)
+		if(GameArea.key && GameArea.key== 88 && gamestatus!=0)
 		{
 			if(paddle1.control==1)
 			paddle1.y+=2;
@@ -248,34 +263,37 @@ function updateGame()
 		if(GameArea.key && GameArea.key == 40 && paddle2.control)
 			paddle2.y+=2;
 	}
-	GameArea.clear();
-	gameball.update();
-	paddle1.update();
-	paddle2.update();
+	if(!pause)
+	{
+		GameArea.clear();
+		gameball.update();
+		paddle1.update();
+		paddle2.update();
 	var ctx=GameArea.context;
 	ctx.font = "25px Comic Sans MS";
 	ctx.fillStyle = "white";
 	ctx.textAlign = "center";
-	if((gameball.x<=10 || gameball.x>= 490) && !waiting && no_of_players==1)
+	if((gameball.x<=10 || gameball.x>= 490) && gamestatus!=0 && no_of_players==1)
 	{
 		GameArea.clear();
 		hide(document.getElementById("score"));
 		if(no_of_players==1)
 		ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
 		endsound.play();
-		gameover=true;
+		gamestatus=2;
 	}
-	if(no_of_players==2 && !waiting &&  (paddle1.score==10 || paddle2.score==10))
+	if(no_of_players==2 && gamestatus!=0 &&  (paddle1.score==10 || paddle2.score==10))
 		{
 		endsound.play();
 		hide(document.getElementById("score-board"));
 		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
 		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
 		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
-		gameover=true;
+		gamestatus=2
 		}
-	if(gameover)
+	if(gamestatus==2)
 		cancelAnimationFrame(frame);
+	}
 }
 
 function startGame()
