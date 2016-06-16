@@ -253,12 +253,11 @@ function updateGame()
 	}
 	if(no_of_players==2 && !waiting &&  (paddle1.score==10 || paddle2.score==10))
 		{
-	
+		endsound.play();
 		hide(document.getElementById("score-board"));
 		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
 		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
 		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
-		endsound.play();
 		gameover=true;
 		}
 	if(gameover)
