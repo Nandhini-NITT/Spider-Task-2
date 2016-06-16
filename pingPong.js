@@ -122,7 +122,7 @@ function findangle(startx,starty,x,y)
 function instruct_2()
 {
 no_of_players=2;
-document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down <br> Player 2:Use up and down arrow keys <br> Press Enter to continue";
+document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys <br> Press Enter to continue";
 }
 function updateGame()
 {
@@ -179,16 +179,16 @@ function updateGame()
 	if(GameArea.key && GameArea.key == 38 && !waiting)
 		{
 		if(paddle1.control==1)
-			paddle1.y-=1;
+			paddle1.y-=2;
 		else if(paddle2.control==1)
-			paddle2.y-=1;
+			paddle2.y-=2;
 		}
 	if(GameArea.key && GameArea.key == 40 && !waiting)
 		{
 			if(paddle1.control==1)
-			paddle1.y+=1;
+			paddle1.y+=2;
 		else if(paddle2.control==1)
-			paddle2.y+=1;
+			paddle2.y+=2;
 		}
 	}
 	else if(no_of_players==2)
@@ -204,17 +204,17 @@ function updateGame()
 		if(GameArea.key && GameArea.key== 87 && !waiting)
 		{
 			if(paddle1.control==1)
-			paddle1.y-=1;
+			paddle1.y-=2;
 		}
 		if(GameArea.key && GameArea.key== 88 && !waiting)
 		{
 			if(paddle1.control==1)
-			paddle1.y+=1;
+			paddle1.y+=2;
 		}
 		if(GameArea.key &&  GameArea.key ==38 && paddle2.control)
-			paddle2.y-=1;
+			paddle2.y-=2;
 		if(GameArea.key && GameArea.key == 40 && paddle2.control)
-			paddle2.y+=1;
+			paddle2.y+=2;
 	}
 	GameArea.clear();
 	gameball.update();
