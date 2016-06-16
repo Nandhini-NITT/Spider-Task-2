@@ -5,7 +5,7 @@ var GameArea=
 	start: function()
 			{
 			this.canvas.height=300;
-			this.canvas.width=300;
+			this.canvas.width=500;
 			this.context=this.canvas.getContext("2d");
 			document.body.insertBefore(this.canvas,document.body.childNodes[0]);
 			window.addEventListener('keydown', function (e) {
@@ -220,12 +220,12 @@ function updateGame()
 	gameball.update();
 	paddle1.update();
 	paddle2.update();
-	if(gameball.x<=10 || gameball.x>= 290 && !waiting)
+	if(gameball.x<=10 || gameball.x>= 490 && !waiting)
 	{
 		GameArea.clear();
 		hide(document.getElementById("score"));
 		var ctx=GameArea.context;
-		ctx.font = "15px Comic Sans MS";
+		ctx.font = "25px Comic Sans MS";
 		ctx.fillStyle = "white";
 		ctx.textAlign = "center";
 		if(no_of_players==1)
@@ -234,8 +234,8 @@ function updateGame()
 		{
 		hide(document.getElementById("score-board"));
 		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
-		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+20);
-		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+40);
+		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
+		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
 		}
 		cancelAnimationFrame(frame);
 	}
@@ -244,8 +244,8 @@ function updateGame()
 function startGame()
 {
 	paddle1=new component(0,100,15,60,1);
-	paddle2=new component(285,100,15,60,0);
-	var angle=Math.random()*61;
+	paddle2=new component(485,100,15,60,0);
+	var angle=Math.random()*41+30;
 	gameball=new ball(140,140,10,100,angle);
 	gameball.newPos();
 	hide(document.getElementById("score-board"));
