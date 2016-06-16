@@ -15,10 +15,10 @@ canvas
 {
 	text-align:center;
 	font-family: 'Indie Flower', cursive;
-	font-size:2rem;
+	font-size:1.4rem;
 	margin: 0 auto;
 	position: absolute;
-    top: 90%;
+    top: 80%;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, -50%);
@@ -26,10 +26,14 @@ canvas
 }
 table td
 {
-	padding:1rem;
-	font-size:1rem;
-	border:3px solid red;
+	padding:0rem;
+	font-size:1.3rem;
 	text-align:center;
+	font-family:Comic Sans MS;
+}
+table
+{
+	border-spacing:0.5rem;
 }
 img
 {
