@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0,hitsound,oversound;
+var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0,hitsound,oversound,gameover=false;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -49,7 +49,6 @@ function component(x,y,width,height,control)
 						{
 						hitsound.play();
 						this.control=0;
-						this.score++;
 						return true;
 						}
 					else
@@ -123,7 +122,7 @@ function findangle(startx,starty,x,y)
 function instruct_2()
 {
 no_of_players=2;
-document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys <br> Press Enter to continue";
+document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys<br>The first player to score 10 points wins <br> Press Enter to continue";
 }
 function updateGame()
 {
@@ -148,6 +147,8 @@ function updateGame()
 	}
 	if(paddle1.crashWith(gameball) )
 	{
+		if(no_of_players==1)
+			paddle1.score++;
 		gameball.startx=25;
 		gameball.multiplierx*=-1;
 		gameball.path=0;
@@ -162,6 +163,8 @@ function updateGame()
 	}
 	else if(paddle2.crashWith(gameball))
 	{
+		if(no_of_players==1)
+			paddle2.score++;
 		gameball.startx=gameball.x;
 		gameball.multiplierx*=-1;
 		gameball.multipliery*=1;
@@ -196,6 +199,20 @@ function updateGame()
 	{
 		document.getElementById("1").innerHTML=paddle1.score;
 		document.getElementById("2").innerHTML=paddle2.score;
+		if(gameball.x<=10)
+			{
+			paddle2.score++;
+			gameball.startx=250;
+			gameball.starty=150;
+			gameball.path=0;
+			}
+		else if(gameball.x>=490)
+			{
+			paddle1.score++;
+			gameball.startx=140;
+			gameball.starty=140;
+			gameball.path=0;
+			}
 		if(GameArea.key && GameArea.key== 13)
 		{
 			waiting=false;
@@ -221,26 +238,31 @@ function updateGame()
 	gameball.update();
 	paddle1.update();
 	paddle2.update();
-	if(gameball.x<=10 || gameball.x>= 490 && !waiting)
+	var ctx=GameArea.context;
+	ctx.font = "25px Comic Sans MS";
+	ctx.fillStyle = "white";
+	ctx.textAlign = "center";
+	if((gameball.x<=10 || gameball.x>= 490) && !waiting && no_of_players==1)
 	{
 		GameArea.clear();
 		hide(document.getElementById("score"));
-		var ctx=GameArea.context;
-		ctx.font = "25px Comic Sans MS";
-		ctx.fillStyle = "white";
-		ctx.textAlign = "center";
 		if(no_of_players==1)
 		ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
-		else
+		endsound.play();
+		gameover=true;
+	}
+	if(no_of_players==2 && !waiting &&  (paddle1.score==10 || paddle2.score==10))
 		{
+	
 		hide(document.getElementById("score-board"));
 		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
 		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
 		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
-		}
-		cancelAnimationFrame(frame);
 		endsound.play();
-	}
+		gameover=true;
+		}
+	if(gameover)
+		cancelAnimationFrame(frame);
 }
 
 function startGame()
