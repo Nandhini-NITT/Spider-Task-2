@@ -1,4 +1,4 @@
-var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0;
+var gameball,paddle1,paddle2,frame,score=0,waiting=true,no_of_players=0,hitsound,oversound;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -47,6 +47,7 @@ function component(x,y,width,height,control)
 					var paddlebottom=this.y+this.height;
 					if((paddleright>=(ballleft) && paddleleft<=ballright)&& (ballobj.y>=paddletop && ballbottom<=paddlebottom+10))
 						{
+						hitsound.play();
 						this.control=0;
 						this.score++;
 						return true;
@@ -96,7 +97,7 @@ function checkboundarycollision()
 {
 	if(gameball.y<=10)
 		{
-			gameball.speed+=0.5;
+			gameball.speed+=0.2;
 			gameball.startx=gameball.x;
 			gameball.starty=gameball.y;
 			gameball.multiplierx*=1;
@@ -106,7 +107,7 @@ function checkboundarycollision()
 		}
 	else if(gameball.y>=290)
 		{
-			gameball.speed+=0.5;
+			gameball.speed+=0.2;
 			gameball.startx=gameball.x;
 			gameball.starty=gameball.y;
 			gameball.multiplierx*=1;
@@ -238,6 +239,7 @@ function updateGame()
 		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
 		}
 		cancelAnimationFrame(frame);
+		endsound.play();
 	}
 }
 
@@ -248,6 +250,10 @@ function startGame()
 	var angle=Math.random()*41+30;
 	gameball=new ball(140,140,10,100,angle);
 	gameball.newPos();
+	hitsound=document.getElementById("hit");
+	hitsound.load();
+	endsound=document.getElementById("game-over");
+	endsound.load();
 	hide(document.getElementById("score-board"));
 	GameArea.start();
 	paddle1.update();
