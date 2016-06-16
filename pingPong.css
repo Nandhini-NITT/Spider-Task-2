@@ -1,5 +1,4 @@
-canvas
-{
+canvas {
 	background:navy;
 	margin: 0 auto;
 	position: absolute;
@@ -11,8 +10,7 @@ canvas
 	border-right:10px solid blue;
 	box-sizing:border-box;
 }
-#score ,#score-board
-{
+#score ,#score-board {
 	text-align:center;
 	font-family: 'Indie Flower', cursive;
 	font-size:1.4rem;
@@ -24,23 +22,19 @@ canvas
     transform: translate(-50%, -50%);
 	box-sizing:border-box;
 }
-table td
-{
+table td {
 	padding:0rem;
 	font-size:1.3rem;
 	text-align:center;
 	font-family:Comic Sans MS;
 }
-table
-{
+table {
 	border-spacing:0.5rem;
 }
-img
-{
+img {
 	-webkit-transform: rotate(-10deg); 
 }
-#player
-{
+#player {
 	float:right;
 	position:relative;
 	top:60%;

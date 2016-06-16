@@ -1,4 +1,14 @@
-var gameball,paddle1,paddle2,frame,score=0,no_of_players=0,hitsound,oversound,gamestatus=0,pause=false;
+//Variable declarations
+var gameball;
+var paddle1;
+var paddle2;
+var score=0;
+var no_of_players=0;
+var hitsound;
+var oversound;
+var gamestatus=0;
+var frame;
+var pause=false;
 var GameArea=
 {
 	canvas:document.createElement("canvas"),
@@ -49,6 +59,7 @@ function component(x,y,width,height,control)
 					var corner2dist_sq = Math.pow(ballobj.x - (this.x+this.width),2) + Math.pow(ballobj.y - this.y,2);
 					var corner3dist_sq = Math.pow(ballobj.x - (this.x + this.width),2) + Math.pow(ballobj.y - (this.y + this.height),2);
 					var corner4dist_sq = Math.pow(ballobj.x - this.x,2) + Math.pow(ballobj.y - (this.y + this.height),2);
+					//To check hit at corners of paddle
 					if(corner1dist_sq <= Math.pow(ballobj.radius,2)||corner2dist_sq <= Math.pow(ballobj.radius,2)	|| corner3dist_sq <=Math.pow(ballobj.radius,2)||corner4dist_sq <= Math.pow(ballobj.radius,2))
 					{
 						gameball.multipliery*=-1;
@@ -57,25 +68,28 @@ function component(x,y,width,height,control)
 						return true;
 					}
 					if((paddleright>=(ballleft) && paddleleft<=ballright)&& (ballobj.y>=paddletop && ballbottom<=paddlebottom+10))
-						{
+					{
 						hitsound.play();
 						this.control=0;
 						return true;
-						}
-						
+					}
 					else
 						return false;
 				}
 }
-function hide (elements) {
+function hide (elements) 
+{
   elements = elements.length ? elements : [elements];
-  for (var index = 0; index < elements.length; index++) {
+  for (var index = 0; index < elements.length; index++) 
+  {
     elements[index].style.display = 'none';
   }
 }
-function unhide (elements) {
+function unhide (elements) 
+{
   elements = elements.length ? elements : [elements];
-  for (var index = 0; index < elements.length; index++) {
+  for (var index = 0; index < elements.length; index++)
+  {
     elements[index].style.display = 'table';
   }
 }
@@ -104,6 +118,7 @@ function ball(x,y,r,path,angle)
 					ctx.fill();
 				}
 }
+//Function to check hit at boundaries
 function checkboundarycollision()
 {
 	if(gameball.y<=10)
@@ -125,44 +140,42 @@ function checkboundarycollision()
 			gameball.newPos();
 		}
 }
-function findangle(startx,starty,x,y)
-{
-	gameball.angle=-Math.atan((y-starty)/(x-startx));
-}
+//To display instructions befor a 2 player game starts
 function instruct_2()
 {
-no_of_players=2;
-document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys<br>The first player to score 10 points wins <br> Press Enter to continue";
+	no_of_players=2;
+	document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys<br>The first player to score 10 points wins <br> Press Enter to continue";
 }
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
 	if(gamestatus!=0 && !pause)
 	{
-	gameball.newPos();
-	paddle1.update();
-	paddle2.update();
+		gameball.newPos();
+		paddle1.update();
+		paddle2.update();
 	}
 	checkboundarycollision();
+	//To check space bar press and pause or resume game
 	if(gamestatus==1 && GameArea.key && GameArea.key== 32)
-		{
+	{
 		if(!pause)
 			{
-			pause=true;
-			if(no_of_players==1)
-				document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to resume";
-			else if(no_of_players==2)
-				document.getElementById("score").innerHTML="<br><br><br>Press space to resume";
+				pause=true;
+				if(no_of_players==1)
+					document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to resume";
+				else if(no_of_players==2)
+					document.getElementById("score").innerHTML="<br><br><br>Press space to resume";
 			}
 		else
 			{
-			pause=false;
-			if(no_of_players==2)
-			document.getElementById("score").innerHTML="<br><br><br><br>Press space to pause";
+				pause=false;
+				if(no_of_players==2)
+				document.getElementById("score").innerHTML="<br><br><br><br>Press space to pause";
 			}
 		GameArea.key=null;
-		}
-	
+	}
+	//Number of players set
 	if(GameArea.key && GameArea.key == 84 && gamestatus==0)
 	{
 		instruct_2();
@@ -173,12 +186,13 @@ function updateGame()
 		no_of_players=1;
 		document.getElementById("score").innerHTML="Score : "+score+"<br>Press space to pause";
 	}
+	//To check collision of ball and paddle
 	if(paddle1.crashWith(gameball) && !pause )
 	{
 		if(no_of_players==1)
-			paddle1.score++;
+			paddle1.score++;	
 		gameball.startx=25;
-		gameball.multiplierx*=-1;
+		gameball.multiplierx*=-1; //Reverse the direction of x
 		gameball.path=0;
 		gameball.starty=gameball.y;
 		gameball.multipliery*=1;
@@ -208,20 +222,21 @@ function updateGame()
 	}
 	if(no_of_players==1 && !pause)
 	{
-	document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to pause";
-	if(GameArea.key && GameArea.key == 38 && gamestatus!=0)
-		{
-		if(paddle1.control==1)
-			paddle1.y-=2;
-		else if(paddle2.control==1)
-			paddle2.y-=2;
-		}
-	if(GameArea.key && GameArea.key == 40 && gamestatus!=0)
+		//Update and display player score
+		document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to pause";
+		if(GameArea.key && GameArea.key == 38 && gamestatus!=0)
 		{
 			if(paddle1.control==1)
-			paddle1.y+=2;
-		else if(paddle2.control==1)
-			paddle2.y+=2;
+				paddle1.y-=2;
+			else if(paddle2.control==1)
+				paddle2.y-=2;
+		}
+		if(GameArea.key && GameArea.key == 40 && gamestatus!=0)
+		{
+			if(paddle1.control==1)
+				paddle1.y+=2;
+			else if(paddle2.control==1)
+				paddle2.y+=2;
 		}
 	}
 	else if(no_of_players==2 && !pause)
@@ -229,19 +244,19 @@ function updateGame()
 		document.getElementById("1").innerHTML=paddle1.score;
 		document.getElementById("2").innerHTML=paddle2.score;
 		if(gameball.x<=10)
-			{
+		{
 			paddle2.score++;
 			gameball.startx=250;
 			gameball.starty=150;
 			gameball.path=0;
-			}
+		}
 		else if(gameball.x>=490)
-			{
+		{
 			paddle1.score++;
 			gameball.startx=140;
 			gameball.starty=140;
 			gameball.path=0;
-			}
+		}
 		if(GameArea.key && GameArea.key== 13 && gamestatus==0)
 		{
 			gamestatus=1;
@@ -251,11 +266,10 @@ function updateGame()
 		if(GameArea.key && GameArea.key== 87 && gamestatus!=0)
 		{
 			if(paddle1.control==1)
-			paddle1.y-=2;
+				paddle1.y-=2;
 		}
-		if(GameArea.key && GameArea.key== 88 && gamestatus!=0)
+		if(GameArea.key && GameArea.key== 88 && paddle1.control)
 		{
-			if(paddle1.control==1)
 			paddle1.y+=2;
 		}
 		if(GameArea.key &&  GameArea.key ==38 && paddle2.control)
@@ -269,30 +283,30 @@ function updateGame()
 		gameball.update();
 		paddle1.update();
 		paddle2.update();
-	var ctx=GameArea.context;
-	ctx.font = "25px Comic Sans MS";
-	ctx.fillStyle = "white";
-	ctx.textAlign = "center";
-	if((gameball.x<=10 || gameball.x>= 490) && gamestatus!=0 && no_of_players==1)
-	{
-		GameArea.clear();
-		hide(document.getElementById("score"));
-		if(no_of_players==1)
-		ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
-		endsound.play();
-		gamestatus=2;
-	}
-	if(no_of_players==2 && gamestatus!=0 &&  (paddle1.score==10 || paddle2.score==10))
+		var ctx=GameArea.context;
+		ctx.font = "25px Comic Sans MS";
+		ctx.fillStyle = "white";
+		ctx.textAlign = "center";
+		if((gameball.x<=10 || gameball.x>= 490) && gamestatus!=0 && no_of_players==1)
 		{
-		endsound.play();
-		hide(document.getElementById("score-board"));
-		ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
-		ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
-		ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
-		gamestatus=2
+			GameArea.clear();
+			hide(document.getElementById("score"));
+			if(no_of_players==1)
+				ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
+			endsound.play();
+			gamestatus=2;
 		}
-	if(gamestatus==2)
-		cancelAnimationFrame(frame);
+		if(no_of_players==2 && gamestatus!=0 &&  (paddle1.score==10 || paddle2.score==10))
+		{
+			endsound.play();
+			hide(document.getElementById("score-board"));
+			ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
+			ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
+			ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
+			gamestatus=2
+		}
+		if(gamestatus==2)
+			cancelAnimationFrame(frame);
 	}
 }
 
