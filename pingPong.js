@@ -128,6 +128,7 @@ function checkboundarycollision()
 			gameball.multiplierx*=1;
 			gameball.multipliery*=-1;
 			gameball.path=0;
+			gameball.speed+=0.1;
 			gameball.newPos();
 		}
 	else if(gameball.y>=290)
@@ -137,6 +138,7 @@ function checkboundarycollision()
 			gameball.multiplierx*=1;
 			gameball.multipliery*=-1;
 			gameball.path=0;
+			gameball.speed+=0.1;
 			gameball.newPos();
 		}
 }
@@ -146,6 +148,31 @@ function instruct_2()
 	no_of_players=2;
 	document.getElementById("score").innerHTML="Player 1: Press 'w' to go up Press 'x' to go down  Player 2:Use up and down arrow keys<br>The first player to score 10 points wins <br> Press Enter to continue";
 }
+function restart()
+{
+	var frame1=requestAnimationFrame(restart);
+	if(GameArea.key && GameArea.key==32 && gamestatus==2)
+	{
+		alert("Play again");
+		paddle1.score=0;
+		paddle2.score=0;
+		score=0;
+		no_of_players=0;
+		pause=false;
+		unhide(document.getElementById("score"));
+		hide(document.getElementById("score-board"));
+		gamestatus=0;
+		var angle=Math.random()*41+30;
+		gameball=new ball(140,140,10,100,angle);
+		gameball.newPos();
+		document.getElementById("score").innerHTML="<b>For single player press S .To enter 2 player mode press T</b>";
+		cancelAnimationFrame(frame);
+		updateGame();
+	}
+	
+}
+			
+	
 function updateGame()
 {
 	frame=requestAnimationFrame(updateGame);
@@ -218,7 +245,7 @@ function updateGame()
 					paddle2.y=Math.floor(Math.random()*241);
 					},500);
 		paddle1.control=1;
-		gameball.speed+=0.2;
+		gameball.speed+=0.3;
 	}
 	if(no_of_players==1 && !pause)
 	{
@@ -249,6 +276,7 @@ function updateGame()
 			gameball.startx=250;
 			gameball.starty=150;
 			gameball.path=0;
+			paddle2.control=1
 		}
 		else if(gameball.x>=490)
 		{
@@ -256,6 +284,7 @@ function updateGame()
 			gameball.startx=140;
 			gameball.starty=140;
 			gameball.path=0;
+			paddle1.control=1;
 		}
 		if(GameArea.key && GameArea.key== 13 && gamestatus==0)
 		{
@@ -290,10 +319,10 @@ function updateGame()
 		if((gameball.x<=10 || gameball.x>= 490) && gamestatus!=0 && no_of_players==1)
 		{
 			GameArea.clear();
-			hide(document.getElementById("score"));
 			if(no_of_players==1)
 				ctx.fillText("Game Over - SCORE:  "+(paddle1.score+paddle2.score), GameArea.canvas.width/2, GameArea.canvas.height/2);
 			endsound.play();
+			document.getElementById("score").innerHTML="<b>Press space to play again</b>";
 			gamestatus=2;
 		}
 		if(no_of_players==2 && gamestatus!=0 &&  (paddle1.score==10 || paddle2.score==10))
@@ -303,10 +332,15 @@ function updateGame()
 			ctx.fillText("Game Over ",GameArea.canvas.width/2,GameArea.canvas.height/2);
 			ctx.fillText("Player 1: "+paddle1.score,GameArea.canvas.width/2,GameArea.canvas.height/2+30);
 			ctx.fillText("Player 2: "+paddle2.score,GameArea.canvas.width/2,GameArea.canvas.height/2+60);
+			document.getElementById("score").innerHTML="<b>Press space to play again</b>";
 			gamestatus=2
 		}
 		if(gamestatus==2)
-			cancelAnimationFrame(frame);
+			{
+				cancelAnimationFrame(frame);
+				GameArea.key=null;
+				restart();
+			}
 	}
 }
 
