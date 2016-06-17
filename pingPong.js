@@ -120,6 +120,16 @@ function ball(x,y,r,path,angle)
 //Function to check hit at boundaries
 function checkboundarycollision()
 {
+	if(gameball.multiplierx==1)
+	{
+		paddle2.control=1;
+		paddle1.control=0;
+	}
+	else 
+	{
+		paddle1.control=1;
+		paddle2.control=0;
+	}
 	if(gameball.y<=10)
 		{
 			gameball.startx=gameball.x;
@@ -164,6 +174,10 @@ function restart()
 		var angle=Math.random()*41+30;
 		gameball=new ball(140,140,10,100,angle);
 		gameball.newPos();
+		if(gameball.multiplierx==-1)
+			paddle1.control=1;
+		else
+			paddle2.control=1;
 		document.getElementById("score").innerHTML="<b>For single player press S .To enter 2 player mode press T</b>";
 		cancelAnimationFrame(frame);
 		updateGame();
