@@ -6,7 +6,7 @@ var score=0;
 var no_of_players=0;
 var hitsound;
 var oversound;
-var gamestatus=0;
+var gamestatus=0; // 0 before game start. 1 during game play. 2 ->gameover
 var frame;
 var pause=false;
 var GameArea=
@@ -21,10 +21,9 @@ var GameArea=
 			window.addEventListener('keydown', function (e) {
 						GameArea.key = e.keyCode;
 						})
-				window.addEventListener('keyup', function (e) {
+			window.addEventListener('keyup', function (e) {
 						GameArea.key = e.keycode;
 						})
-
 			},
 	clear: function()
 			{
@@ -253,16 +252,16 @@ function updateGame()
 		document.getElementById("score").innerHTML="Score : "+(paddle1.score+paddle2.score)+"<br>Press space to pause";
 		if(GameArea.key && GameArea.key == 38 && gamestatus!=0)
 		{
-			if(paddle1.control==1)
+			if(paddle1.control==1 && paddle1.y-2>=0)
 				paddle1.y-=2;
-			else if(paddle2.control==1)
+			else if(paddle2.control==1 && paddle2.y-2>=0)
 				paddle2.y-=2;
 		}
 		if(GameArea.key && GameArea.key == 40 && gamestatus!=0)
 		{
-			if(paddle1.control==1)
+			if(paddle1.control==1 && paddle1.y+2<=240)
 				paddle1.y+=2;
-			else if(paddle2.control==1)
+			else if(paddle2.control==1 && paddle2.y+2<=240)
 				paddle2.y+=2;
 		}
 	}
@@ -292,18 +291,18 @@ function updateGame()
 			unhide(document.getElementById("score-board"));
 			document.getElementById("score").innerHTML="<br><br><br><br>Press space to pause";
 		}
-		if(GameArea.key && GameArea.key== 87 && gamestatus!=0)
+		if(GameArea.key && GameArea.key== 87 && gamestatus!=0 && paddle1.y-2>=0)
 		{
 			if(paddle1.control==1)
 				paddle1.y-=2;
 		}
-		if(GameArea.key && GameArea.key== 88 && paddle1.control)
+		if(GameArea.key && GameArea.key== 88 && paddle1.control && paddle1.y+2<=240)
 		{
 			paddle1.y+=2;
 		}
-		if(GameArea.key &&  GameArea.key ==38 && paddle2.control)
+		if(GameArea.key &&  GameArea.key ==38 && paddle2.control && paddle2.y-2>=0)
 			paddle2.y-=2;
-		if(GameArea.key && GameArea.key == 40 && paddle2.control)
+		if(GameArea.key && GameArea.key == 40 && paddle2.control && paddle2.y+2<=240)
 			paddle2.y+=2;
 	}
 	if(!pause)
