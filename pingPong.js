@@ -6,10 +6,7 @@ var score=0;
 var no_of_players=0;
 var hitsound;
 var oversound;
-<<<<<<< HEAD
 var gamestatus=0; // 0 before game start. 1 during game play. 2 ->gameover
-=======
->>>>>>> fc7b1ef2e1ad54d94f34abc18fc266101a1ed7b9
 var frame;
 var pause=false;
 var GameArea=
@@ -27,7 +24,6 @@ var GameArea=
 			window.addEventListener('keyup', function (e) {
 						GameArea.key = e.keycode;
 						})
-
 			},
 	clear: function()
 			{
@@ -249,7 +245,6 @@ function updateGame()
 					},500);
 		paddle1.control=1;
 		gameball.speed+=0.3;
-<<<<<<< HEAD
 	}
 	if(no_of_players==1 && !pause)
 	{
@@ -308,9 +303,8 @@ function updateGame()
 		if(GameArea.key &&  GameArea.key ==38 && paddle2.control && paddle2.y-2>=0)
 			paddle2.y-=2;
 		if(GameArea.key && GameArea.key == 40 && paddle2.control && paddle2.y+2<=240)
-=======
+			paddle2.y+=2;
 	}
-	
 	if(!pause)
 	{
 		GameArea.clear();
